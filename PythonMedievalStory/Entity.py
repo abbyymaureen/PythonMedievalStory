@@ -43,6 +43,10 @@ class Entity:
     def set_health(self):
         self.health = self.roll_dice()
 
+    def set_fighting_health(self, health):
+        self.health = health
+        return self
+
     def get_health(self):
         return self.health
 
