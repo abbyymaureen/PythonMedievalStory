@@ -39,18 +39,30 @@ def setup():
 
     monsters.extend([dragon, wizard, goblin, ogre, fairy])
 
-    # Return the created objects
+    # return the created objects (all in one line or else it breaks)
     return places, people, monsters
 
 
 def menu():
-    print("*** Medieval Story World ***\n1. Go to Town\n2. Go to Market\n3. Go to Cave")
-    try:
-        menu_choice = int(input("> "))
-    except ValueError:
-        # Handle the case when the user enters a non-integer value
-        print("Please enter a valid integer.")
+    while True:
+        print("*** Medieval Story World ***\n1. Go to Town\n2. Go to Market\n3. Go to Cave")
+        try:
+            menu_choice = int(input("> "))
 
+            if menu_choice == 1:
+                pass
+            elif menu_choice == 2:
+                pass
+            elif menu_choice == 3:
+                pass
+            else:
+                print("You entered an invalid integer. Please try again")
+                continue
+        except ValueError:
+            # Handle the case when the user enters a non-integer value
+            print("Please enter a valid integer.")
+            continue
+        break
 
 def get_main_character(people):
     for person in people:
@@ -71,39 +83,39 @@ def fight(people, monsters):
 
         if not monster.get_good():
             print(f"Fighting {monster.get_name()}, a {monster.get_species()}!")
-            while me.get_health() >= 0 or monster.get_health() >= 0:
+
+            while me.get_health() > 0 and monster.get_health() > 0:
                 print(f"You have {me.get_health()} health and {monster.get_name()} has {monster.get_health()} health.")
+                monster_health_before_attack = monster.get_health()
+
+                # Player's attack
                 monster = monster.set_fighting_health(monster.get_health() - me.get_strength())
                 time.sleep(2)
+                print(f"You struck the {monster.get_name()} with a strength of {me.get_strength()}.")
+                print(f"{monster.get_name()} now has a health of {monster.get_health()} and you have a health of {me.get_health()}.")
 
-                if me.get_health() <= 0:
-                    print(f"You died fighting the {monster.get_name()} Goodbye!")
-                    break
-                elif monster.get_health() <= 0:
+                # Check if monster is defeated
+                if monster.get_health() <= 0:
                     print(f"You defeated {monster.get_name()}! You have now won {monster.get_gold()} gold.")
                     me.set_gold(me.get_gold() + monster.get_gold())
                     monsters.pop(rand_index)
                     menu()
-                else:
-                    print(f"You and {monster.get_name()} both died... You have now lost. Goodbye!")
-                    break
+                    break  # Exit the loop if the monster is defeated
 
-                print(f"{monster.get_name()} now has a health of {monster.get_health()} and you have a health of {me.get_health()}.")
+                # Monster's attack
                 me = me.set_fighting_health(me.get_health() - monster.get_strength())
                 time.sleep(2)
-                print(f"The monster attacked! You now have a health of {me.get_health()} and {monster.get_name()} has a health of {monster.get_health()}.")
+                print(f"{monster.get_name()} struck you with a strength of {monster.get_strength()}.")
+                print(f"You now have a health of {me.get_health()} and {monster.get_name()} has a health of {monster.get_health()}.")
 
+                # Check if the player is defeated
                 if me.get_health() <= 0:
-                    print(f"You died fighting the {monster.get_name()} Goodbye!")
-                    break
-                elif monster.get_health() <= 0:
-                    print(f"You defeated {monster.get_name()}! You have now won {monster.get_gold()} gold.")
-                    me.set_gold(me.get_gold() + monster.get_gold())
-                    monsters.pop(rand_index)
-                    menu()
-                else:
-                    print(f"You and {monster.get_name()} both died... You have now lost. Goodbye!")
-                    break
+                    print(f"You died fighting the {monster.get_name()}. Goodbye!")
+                    break  # Exit the loop if the player is defeated
+
+            # Remove the defeated monster from the list after the fight is over
+            monsters.pop(rand_index)
+            menu()
         else:
             print(f"You have stumbled upon a magical {monster.get_species()}. These creatures are good!")
             print(f"Fairy: My name is {monster.get_name()}. It is so wonderful to meet you, {me.get_name()}!")
