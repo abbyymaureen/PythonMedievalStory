@@ -1,4 +1,10 @@
+"""
+@author abbybrown
+@date 01/20/24
+@filename Location.py
 
+Generates the locations where each activity may occur.
+"""
 
 class Location:
     name = ""

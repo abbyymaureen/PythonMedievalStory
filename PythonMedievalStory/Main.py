@@ -28,7 +28,7 @@ import Location
 import Entity
 import random
 import time
-import os
+import sys
 import subprocess
 
 
@@ -66,11 +66,11 @@ def setup():
 def go_town(people, monsters):
     print("You have arrived in the town square. Here you can do various activities to gain strength and health.")
 
-    # Make the town menu
-    print("1. Sleep (60 seconds - 5 Health)\n2. Learn Jujitsu (60 seconds - 5 Strength)\n3. Meditate (30 seconds - 2 Health)")
-    print("4. Get a Boxing Lesson (180 Seconds - 15 Strength)\n5. Go to Market\n6. Go to Cave\n7. End Game")
-
     while True:
+        # Make the town menu
+        print("1. Sleep (60 seconds - 5 Health)\n2. Learn Jujitsu (60 seconds - 5 Strength)\n3. Meditate (30 seconds - 2 Health)")
+        print("4. Get a Boxing Lesson (180 Seconds - 15 Strength)\n5. Go to Market\n6. Go to Cave\n7. End Game")
+
         try:
             user_choice = int(input("Enter your choice: "))
             me = get_main_character(people)
@@ -86,27 +86,27 @@ def go_town(people, monsters):
                 continue
             elif user_choice == 2:
                 file = "fight.mp3"
-                os.system("mpg123 " + file)
+                player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(60)
-                os.system("pkill -f 'mpg123'")
+                player_process.terminate()
                 me.set_fighting_strength(me.get_strength() + 5)
                 print(f"You now have a total strength of {me.get_strength()}!")
                 time.sleep(5)
                 continue
             elif user_choice == 3:
                 file = "meditation.mp3"
-                os.system("mpg123 " + file)
+                player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(30)
-                os.system("pkill -f 'mpg123'")
+                player_process.terminate()
                 me.set_fighting_health(me.get_health() + 2)
                 print(f"You now have a total health of {me.get_health()}!")
                 time.sleep(5)
                 continue
             elif user_choice == 4:
                 file = "action.mp3"
-                os.system("mpg123 " + file)
+                player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(180)
-                os.system("pkill -f 'mpg123'")
+                player_process.terminate()
                 me.set_fighting_strength(me.get_strength() + 15)
                 print(f"You now have a total strength of {me.get_strength()}!")
                 time.sleep(5)
@@ -118,7 +118,7 @@ def go_town(people, monsters):
             elif user_choice == 7:
                 print("Thank you for playing! You ended the game with:")
                 print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
-                break
+                sys.exit()
             else:
                 # Handle the case when the user enters an invalid number
                 print("Please enter a valid number between 1 and 7.")
@@ -135,7 +135,7 @@ def go_market(people, monsters):
     print(f"You have arrived at the market. Here you can buy health and strength with your gold.")
     print("1. Buy 5 Health - 10 Gold\n2. Buy 15 Health - 20 Gold\n3. Buy 35 Health - 30 Gold")
     print("4. Buy 1 Strength - 5 Gold\n5. Buy 3 Strength - 10 Gold\n6. Buy 6 Strength - 15 Gold")
-    print("7. Go to Cave\n8. Go to Town")
+    print("7. Go to Cave\n8. Go to Town\n9. Quit Game")
 
     while True:
         try:
@@ -209,7 +209,7 @@ def go_market(people, monsters):
             elif user_choice == 9:
                 print("Thank you for playing! You ended the game with:")
                 print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
-                break
+                sys.exit()
             else:
                 # Handle the case when the user enters an invalid number
                 print("Please enter a valid number between 1 and 7.")
@@ -233,9 +233,9 @@ def menu(people, monsters):
     me = get_main_character(people)
 
     while True:
-        print("****** Medieval Story World ******")
-        print(f"   Health {me.get_health()}         Strength: {me.get_strength()}")
-        print("1. Go to Town\n2. Go to Market\n3. Go to Cave")
+        print("********* Medieval Story World *********")
+        print(f"   Health {me.get_health()}   Strength: {me.get_strength()}   Gold: {me.get_gold()}")
+        print("1. Go to Town\n2. Go to Market\n3. Go to Cave\n4. Quit Game")
         try:
             menu_choice = int(input("> "))
 
@@ -245,6 +245,10 @@ def menu(people, monsters):
                 go_market(people, monsters)
             elif menu_choice == 3:
                 go_cave(people, monsters)
+            elif menu_choice == 4:
+                print("Thank you for playing! You ended the game with:")
+                print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
+                break
             else:
                 print("You entered an invalid integer. Please try again")
                 continue
@@ -278,7 +282,6 @@ def fight(people, monsters):
 
                 while me.get_health() > 0 and monster.get_health() > 0:
                     print(f"You have {me.get_health()} health and {monster.get_name()} has {monster.get_health()} health.")
-                    monster_health_before_attack = monster.get_health()
 
                     # Player's attack
                     monster = monster.set_fighting_health(monster.get_health() - me.get_strength())
@@ -303,7 +306,8 @@ def fight(people, monsters):
                     # Check if the player is defeated
                     if me.get_health() <= 0:
                         print(f"You died fighting the {monster.get_name()}. Goodbye!")
-                        break  # Exit the loop if the player is defeated
+                        print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
+                        sys.exit()
 
                 # Remove the defeated monster from the list after the fight is over
                 monsters.pop(rand_index)
@@ -359,7 +363,9 @@ def fight(people, monsters):
                     monsters.pop(rand_index)
                     menu(people, monsters)
         else:
-            print("You have defeated all of the monsters in the cave! Congratulations!")
+            print("You have defeated all of the monsters in the cave! Congratulations! You have won the game!")
+            print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
+            sys.exit()
 
 
 def main():

@@ -1,3 +1,10 @@
+"""
+@author abbybrown
+@date 01/20/24
+@filename Entity.py
+
+The entity class allows for the generation of people and monsters.
+"""
 import random
 
 
