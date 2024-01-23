@@ -23,6 +23,8 @@ Creative Commons / Attribution 3.0 Unported License (CC BY 3.0)
 https://creativecommons.org/licenses/by/3.0/deed.en_US
 
 Music by https://www.free-stock-music.com
+
+Debugging logic with ChatGPT intermittently
 """
 import Location
 import Entity
@@ -80,6 +82,7 @@ def go_town(people, monsters):
             # check each possible choice
             if user_choice == 1:
                 # open the 'sleep' music file, award health
+                # source: https://www.geeksforgeeks.org/play-sound-in-python/
                 file = "sleep.mp3"
                 player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(60)
@@ -282,6 +285,7 @@ def menu(people, monsters):
 
 
 # get the main character user
+# reference: https://stackoverflow.com/questions/31169773/python-how-to-find-something-in-a-list-of-lists
 def get_main_character(people):
     for person in people:
         if person.name == "Odilie Fuchsg":
@@ -333,7 +337,7 @@ def fight(people, monsters):
                         print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
                         sys.exit()
 
-                # Remove the defeated monster from the list after the fight is over
+                # remove the defeated monster from the list after the fight is over
                 monsters.pop(rand_index)
                 menu(people, monsters)
             else:
