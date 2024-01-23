@@ -32,6 +32,7 @@ import sys
 import subprocess
 
 
+# creates all the people, monsters, and places that will take place in this game
 def setup():
     places = []
     people = []
@@ -73,9 +74,12 @@ def go_town(people, monsters):
 
         try:
             user_choice = int(input("Enter your choice: "))
+            # make sure to get the main character, as we want to manipulate their stats
             me = get_main_character(people)
 
+            # check each possible choice
             if user_choice == 1:
+                # open the 'sleep' music file, award health
                 file = "sleep.mp3"
                 player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(60)
@@ -85,6 +89,7 @@ def go_town(people, monsters):
                 time.sleep(5)
                 continue
             elif user_choice == 2:
+                # open the 'fight' file, award strength
                 file = "fight.mp3"
                 player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(60)
@@ -94,6 +99,7 @@ def go_town(people, monsters):
                 time.sleep(5)
                 continue
             elif user_choice == 3:
+                # open the 'meditation' file, award health
                 file = "meditation.mp3"
                 player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(30)
@@ -103,6 +109,7 @@ def go_town(people, monsters):
                 time.sleep(5)
                 continue
             elif user_choice == 4:
+                # open the 'action' file, award strength
                 file = "action.mp3"
                 player_process = subprocess.Popen(["mpg123", file])
                 time.sleep(180)
@@ -118,6 +125,7 @@ def go_town(people, monsters):
             elif user_choice == 7:
                 print("Thank you for playing! You ended the game with:")
                 print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
+                # fully exit the program
                 sys.exit()
             else:
                 # Handle the case when the user enters an invalid number
@@ -131,6 +139,7 @@ def go_town(people, monsters):
         break
 
 
+# allows the user to go to the market and buy various items
 def go_market(people, monsters):
     print(f"You have arrived at the market. Here you can buy health and strength with your gold.")
     print("1. Buy 5 Health - 10 Gold\n2. Buy 15 Health - 20 Gold\n3. Buy 35 Health - 30 Gold")
@@ -140,9 +149,11 @@ def go_market(people, monsters):
     while True:
         try:
             user_choice = int(input("Enter your choice: "))
+            # ensure to select the main character, as this is the user
             me = get_main_character(people)
 
             if user_choice == 1:
+                # make sure that the user has enough gold
                 if me.get_gold() >= 10:
                     me.set_fighting_health(me.get_health() + 5)
                     me.set_gold(me.get_gold() - 10)
@@ -153,6 +164,7 @@ def go_market(people, monsters):
                     print("You don't have enough gold! Make a new selection...")
                     continue
             elif user_choice == 2:
+                # make sure that the user has enough gold
                 if me.get_gold() >= 20:
                     me.set_fighting_health(me.get_health() + 15)
                     me.set_gold(me.get_gold() - 20)
@@ -163,6 +175,7 @@ def go_market(people, monsters):
                     print("You don't have enough gold! Make a new selection...")
                     continue
             elif user_choice == 3:
+                # make sure that the user has enough gold
                 if me.get_gold() >= 30:
                     me.set_fighting_health(me.get_health() + 35)
                     me.set_gold(me.get_gold() - 30)
@@ -173,6 +186,7 @@ def go_market(people, monsters):
                     print("You don't have enough gold! Make a new selection...")
                     continue
             elif user_choice == 4:
+                # make sure that the user has enough gold
                 if me.get_gold() >= 5:
                     me.set_fighting_strength(me.get_strength() + 1)
                     me.set_gold(me.get_gold() - 5)
@@ -183,6 +197,7 @@ def go_market(people, monsters):
                     print("You don't have enough gold! Make a new selection...")
                     continue
             elif user_choice == 5:
+                # make sure that the user has enough gold
                 if me.get_gold() >= 10:
                     me.set_fighting_strength(me.get_strength() + 3)
                     me.set_gold(me.get_gold() - 10)
@@ -193,6 +208,7 @@ def go_market(people, monsters):
                     print("You don't have enough gold! Make a new selection...")
                     continue
             elif user_choice == 6:
+                # make sure that the user has enough gold
                 if me.get_gold() >= 15:
                     me.set_fighting_strength(me.get_strength() + 6)
                     me.set_gold(me.get_gold() - 15)
@@ -209,6 +225,7 @@ def go_market(people, monsters):
             elif user_choice == 9:
                 print("Thank you for playing! You ended the game with:")
                 print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
+                # fully exit the program
                 sys.exit()
             else:
                 # Handle the case when the user enters an invalid number
@@ -222,13 +239,16 @@ def go_market(people, monsters):
         break
 
 
+# allows the user to travel to cave (where fights occur)
 def go_cave(people, monsters):
     print("You have entered the mysterious cave. It is rumored that there are monsters in here...")
     time.sleep(5)
     print("What's that you hear? A monster approaches!!")
+    # call the fight function - pairs user with random monster
     fight(people, monsters)
 
 
+# display the main menu (which shows all general options and player stats)
 def menu(people, monsters):
     me = get_main_character(people)
 
@@ -237,6 +257,7 @@ def menu(people, monsters):
         print(f"   Health {me.get_health()}   Strength: {me.get_strength()}   Gold: {me.get_gold()}")
         print("1. Go to Town\n2. Go to Market\n3. Go to Cave\n4. Quit Game")
         try:
+            # ensure that the user enters an integer
             menu_choice = int(input("> "))
 
             if menu_choice == 1:
@@ -250,6 +271,7 @@ def menu(people, monsters):
                 print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
                 break
             else:
+                # check to ensure the user didn't input an invalid number
                 print("You entered an invalid integer. Please try again")
                 continue
         except ValueError:
@@ -259,12 +281,14 @@ def menu(people, monsters):
         break
 
 
+# get the main character user
 def get_main_character(people):
     for person in people:
         if person.name == "Odilie Fuchsg":
             return person
 
 
+# allows the user to fight a monster (both good and bad monsters)
 def fight(people, monsters):
     # get the main character
     me = get_main_character(people)
@@ -283,27 +307,27 @@ def fight(people, monsters):
                 while me.get_health() > 0 and monster.get_health() > 0:
                     print(f"You have {me.get_health()} health and {monster.get_name()} has {monster.get_health()} health.")
 
-                    # Player's attack
+                    # player's attack
                     monster = monster.set_fighting_health(monster.get_health() - me.get_strength())
                     time.sleep(2)
                     print(f"You struck the {monster.get_name()} with a strength of {me.get_strength()}.")
                     print(f"{monster.get_name()} now has a health of {monster.get_health()} and you have a health of {me.get_health()}.")
 
-                    # Check if monster is defeated
+                    # check if monster is defeated
                     if monster.get_health() <= 0:
                         print(f"You defeated {monster.get_name()}! You have now won {monster.get_gold()} gold.")
                         me.set_gold(me.get_gold() + monster.get_gold())
                         monsters.pop(rand_index)
                         menu(people, monsters)
-                        break  # Exit the loop if the monster is defeated
+                        break
 
-                    # Monster's attack
+                    # monster's attack
                     me = me.set_fighting_health(me.get_health() - monster.get_strength())
                     time.sleep(2)
                     print(f"{monster.get_name()} struck you with a strength of {monster.get_strength()}.")
                     print(f"You now have a health of {me.get_health()} and {monster.get_name()} has a health of {monster.get_health()}.")
 
-                    # Check if the player is defeated
+                    # check if the player is defeated
                     if me.get_health() <= 0:
                         print(f"You died fighting the {monster.get_name()}. Goodbye!")
                         print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
@@ -319,16 +343,22 @@ def fight(people, monsters):
                 time.sleep(2)
                 print("What can you break, even if you never pick it up or touch it? ")
                 answer_one = input("> ").lower()
+
+                # check to see if user got the correct answer
                 if answer_one == "a promise" or answer_one == "promise" or answer_one == "promises":
                     print("You did it! A promise can be broken without being touched! You have won 25 gold! However,"
                           "would you like a chance to double your gold...?\nIf you get this next riddle right, you win "
                           "50 gold instead! But if you answer incorrectly, you win nothing.")
                     play_again = input("So, what do you say (y/n): ").lower()
+
+                    # check whether user wishes to play again
                     if play_again == "yes" or play_again == "y":
                         print("Wonderful choice! Get ready for the most challenging question of your life...")
                         time.sleep(2)
                         print("I have branches, but no fruit, trunk or leaves. What am I?")
                         answer_two = input("> ").lower()
+
+                        # check whether the answer is correct
                         if answer_two == "bank" or answer_two == "banks" or answer_two == "a bank":
                             print("Congratulations! Banks was the right answer! Here is your 50 gold as promised...")
                             time.sleep(2)
@@ -341,6 +371,7 @@ def fight(people, monsters):
                                   "this question, you don't win any gold...\n")
                             monsters.pop(rand_index)
                             menu(people, monsters)
+                    # don't want to play again, allow for gold to be awarded
                     elif play_again == "no" or "n":
                         print("Playing it safe I see, wise of you. Here's your 25 gold as promised...")
                         time.sleep(2)
@@ -348,6 +379,7 @@ def fight(people, monsters):
                         print(f"You now have {me.get_gold()} gold.")
                         monsters.pop(rand_index)
                         menu(people, monsters)
+                    # someone gave a bad input - you lose all your gold now
                     else:
                         print("That wasn't a valid response. You just lost all of your gold!")
                         me.set_gold(0)
@@ -368,6 +400,7 @@ def fight(people, monsters):
             sys.exit()
 
 
+# call all of our functions
 def main():
     places, people, monsters = setup()
     menu(people, monsters)
