@@ -53,6 +53,10 @@ class Entity:
     def set_strength(self):
         self.strength = self.roll_dice()
 
+    def set_fighting_strength(self, strength):
+        self.strength = strength
+        return self
+
     def get_strength(self):
         return self.strength
 

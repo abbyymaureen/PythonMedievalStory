@@ -5,11 +5,30 @@
 
 This program allows the user to play a console-based medieval times game. The user will be able
 to travel around the medieval world, kill magical creatures, and make friends along the way.
+
+Song Credits:
+Sky by Alex-Productions | https://onsound.eu/
+Music promoted by https://www.free-stock-music.com
+Creative Commons / Attribution 3.0 Unported License (CC BY 3.0)
+https://creativecommons.org/licenses/by/3.0/deed.en_US
+
+Lullaby by Alex-Productions | https://onsound.eu/
+Music promoted by https://www.free-stock-music.com
+Creative Commons / Attribution 3.0 Unported License (CC BY 3.0)
+https://creativecommons.org/licenses/by/3.0/deed.en_US
+
+Fight by Alex-Productions | https://onsound.eu/
+Music promoted by https://www.free-stock-music.com
+Creative Commons / Attribution 3.0 Unported License (CC BY 3.0)
+https://creativecommons.org/licenses/by/3.0/deed.en_US
+
+Music by https://www.free-stock-music.com
 """
 import Location
 import Entity
 import random
 import time
+import os
 
 
 def setup():
@@ -43,18 +62,82 @@ def setup():
     return places, people, monsters
 
 
-def menu():
+def go_town(people):
+    print("You have arrived in the town square. Here you can do various activities to gain strength and health.")
+
+    # Make the town menu
+    print("1. Sleep (60 seconds - 5 Health)\n2. Learn Jujitsu (60 seconds - 5 Strength)\n3. Meditate (30 seconds - 2 Health)")
+    print("4. Get a Boxing Lesson (180 Seconds - 15 Strength)\n5. Go to Market\n6. Go to Cave\n7. End Game")
+
+    while True:
+        try:
+            user_choice = int(input("Enter your choice: "))
+            me = get_main_character(people)
+
+            if user_choice == 1:
+                file = "sleep.mp3"
+                os.system("mpg123 " + file)
+                time.sleep(60)
+                os.system("pkill -f 'mpg123'")
+                me.set_fighting_health(me.get_health() + 5)
+                print(f"You now have a total health of {me.get_health()}!")
+            elif user_choice == 2:
+                file = "fight.mp3"
+                os.system("mpg123 " + file)
+                time.sleep(60)
+                os.system("pkill -f 'mpg123'")
+                me.set_fighting_strength(me.get_strength() + 5)
+                print(f"You now have a total strength of {me.get_strength()}!")
+            elif user_choice == 3:
+                file = "meditation.mp3"
+                os.system("mpg123 " + file)
+                time.sleep(30)
+                os.system("pkill -f 'mpg123'")
+                me.set_fighting_health(me.get_health() + 2)
+                print(f"You now have a total health of {me.get_health()}!")
+            elif user_choice == 4:
+                file = "action.mp3"
+                os.system("mpg123 " + file)
+                time.sleep(180)
+                os.system("pkill -f 'mpg123'")
+                me.set_fighting_strength(me.get_strength() + 15)
+                print(f"You now have a total strength of {me.get_strength()}!")
+            elif user_choice == 5:
+                go_market()
+            elif user_choice == 6:
+                go_cave()
+            elif user_choice == 7:
+                print("Thank you for playing! You ended the game with:")
+                print(f"Health: {me.get_health()}\nStrength: {me.get_strength()}\nGold: {me.get_gold()}")
+                break
+
+        except ValueError:
+            # Handle the case when the user enters a non-integer value
+            print("Please enter a valid integer.")
+            continue
+        break
+
+
+def go_market():
+    print(f"You have arrived at the market, ")
+
+
+def go_cave():
+    pass
+
+
+def menu(people):
     while True:
         print("*** Medieval Story World ***\n1. Go to Town\n2. Go to Market\n3. Go to Cave")
         try:
             menu_choice = int(input("> "))
 
             if menu_choice == 1:
-                pass
+                go_town(people)
             elif menu_choice == 2:
-                pass
+                go_market()
             elif menu_choice == 3:
-                pass
+                go_cave()
             else:
                 print("You entered an invalid integer. Please try again")
                 continue
@@ -63,6 +146,7 @@ def menu():
             print("Please enter a valid integer.")
             continue
         break
+
 
 def get_main_character(people):
     for person in people:
@@ -99,7 +183,7 @@ def fight(people, monsters):
                     print(f"You defeated {monster.get_name()}! You have now won {monster.get_gold()} gold.")
                     me.set_gold(me.get_gold() + monster.get_gold())
                     monsters.pop(rand_index)
-                    menu()
+                    menu(people)
                     break  # Exit the loop if the monster is defeated
 
                 # Monster's attack
@@ -115,7 +199,7 @@ def fight(people, monsters):
 
             # Remove the defeated monster from the list after the fight is over
             monsters.pop(rand_index)
-            menu()
+            menu(people)
         else:
             print(f"You have stumbled upon a magical {monster.get_species()}. These creatures are good!")
             print(f"Fairy: My name is {monster.get_name()}. It is so wonderful to meet you, {me.get_name()}!")
@@ -139,25 +223,25 @@ def fight(people, monsters):
                         me.set_gold(me.get_gold() + 50)
                         print(f"You now have {me.get_gold()} gold.\n")
                         monsters.pop(rand_index)
-                        menu()
+                        menu(people)
                     else:
                         print("I'm sorry, the correct answer was 'bank.' Better luck next time. As a result of losing"
                               "this question, you don't win any gold...\n")
                         monsters.pop(rand_index)
-                        menu()
+                        menu(people)
                 elif play_again == "no" or "n":
                     print("Playing it safe I see, wise of you. Here's your 25 gold as promised...")
                     time.sleep(2)
                     me.set_gold(me.get_gold() + 25)
                     print(f"You now have {me.get_gold()} gold.")
                     monsters.pop(rand_index)
-                    menu()
+                    menu(people)
                 else:
                     print("That wasn't a valid response. You just lost all of your gold!")
                     me.set_gold(0)
                     print(f"You now have {me.get_gold()} gold.")
                     monsters.pop(rand_index)
-                    menu()
+                    menu(people)
             else:
                 print("I'm sorry, the correct answer was 'a promise.' You don't win this time, but here's an extra"
                       " 5 gold just for playing along :)")
@@ -165,7 +249,7 @@ def fight(people, monsters):
                 me.set_gold(me.get_gold() + 5)
                 print(f"You now have {me.get_gold()} gold.\n")
                 monsters.pop(rand_index)
-                menu()
+                menu(people)
 
 
 def main():
